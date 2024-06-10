@@ -2,7 +2,7 @@
 
 #include <SPI.h>   // Default library
 #include <Wire.h>   // Default library
-#include <Adafruit_GFX.h // downloaded with Arduino IDE managed libraries>
+#include <Adafruit_GFX.h> // downloaded with Arduino IDE managed libraries
 #include <Adafruit_SSD1306.h> // downloaded with Arduino IDE managed libraries
 #include <Adafruit_MLX90614.h> // Modified library downloaded from https://www.instructables.com/Multiple-IR-Temperature-Sensors/
 
