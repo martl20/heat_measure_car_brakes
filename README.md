@@ -15,6 +15,6 @@ Next to that it's advisable for testing to use a breadboard and plugin you hardw
 
 The code written is using a modified library because there are multiple mlx90614 sensor addresses and the default code can only handle the default address 0x5A.
 
-I found out these mlx90614 sensor are difficult to change there address with Arduino. But if you have an Raspberry Pi program kit, it's much easier to accomplish. I don't know exactly how I did, but this is my advise to you if you are also having trouble changing the mlx90614 address.
-
-
+I found out these mlx90614 sensor are difficult to change there address with Arduino. But if you have a Raspberry Pi program kit, it's much easier to accomplish. 
+You will need to run this code: https://github.com/olegkutkov/allsky/blob/master/src/utils/mlx90614
+Check the README, and you will find how to change the i2c address
