@@ -13,7 +13,7 @@ I use a Teensy LC as the base, because it's small, has i2c and 5v available. I'm
 
 Next to that it's advisable for testing to use a breadboard and plugin you hardware.
 
-The code written is using a modified library because there are multiple mlx90614 sensor addresses and the default code can only handle the default address 0x5A.
+The code written is using a modified library (https://www.instructables.com/Multiple-IR-Temperature-Sensors/) because there are multiple mlx90614 sensor addresses and the default code can only handle the default address 0x5A.
 
 I found out these mlx90614 sensor are difficult to change there address with Arduino. But if you have a Raspberry Pi program kit, it's much easier to accomplish. 
 You will need to run this code: https://github.com/olegkutkov/allsky/blob/master/src/utils/mlx90614
