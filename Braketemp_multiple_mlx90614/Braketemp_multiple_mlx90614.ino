@@ -6,12 +6,13 @@
 #include <Adafruit_SSD1306.h> // downloaded with Arduino IDE managed libraries
 #include <Adafruit_MLX90614.h> // Modified library downloaded from https://www.instructables.com/Multiple-IR-Temperature-Sensors/
 
-
 #define leftTemp 0x5A
 #define rightTemp 0x5C // modified the address on linux with a Raspberry Pi programmer kit. check: https://olegkutkov.me/2017/08/10/mlx90614-raspberry/
 float lTemp;
 float rTemp;
-
+int ledon = 0;
+int ledoff = 1;
+String escstatus;
 Adafruit_MLX90614 mlx;
 
 float getLeftTemp(){
@@ -58,7 +59,9 @@ unsigned long maxValue = 160UL; //1 seconden
 
 void setup() {
   Serial.begin(9600);
-
+  Serial1.begin(9600);
+  pinMode(LED_BUILTIN, OUTPUT);       // LED
+  pinMode(PIN_A1, INPUT_PULLUP); // Pushbutton
 // MLX90614 thermal heat sensor
   if (!Serial){
     Serial.println("Sparkfun MLX90614 test");
@@ -88,7 +91,8 @@ void setup() {
 void loop() {
   lTemp = getLeftTemp();
   rTemp = getRightTemp();
-  
+  if (lTemp >= 500) {lTemp = 0;}
+  if (rTemp >= 500) {rTemp = 0;}
    if(value == 0)
   {
   testdrawstylesbase(); 
@@ -104,17 +108,38 @@ void loop() {
    serialprintlines();
    value = 0UL;
   }
+  if ( digitalRead(PIN_A1) == LOW ) { //Button is pressed?
+    if ( ledon == 0 ) {
+    digitalWrite(LED_BUILTIN, HIGH);   // LED on
+    Serial.println("LED on!!");
+    escstatus = "on"  ;
+    ledon = 1 ; 
+    } 
+  }
+if ( digitalRead(PIN_A1) == HIGH ) { //Button is depressed?
+     if ( ledon == 1 ) { ledoff = 0 ; ledon = 2;}
+     if ( ledoff == 1 ) { ledon = 0 ;}
 }
-
+  if ( digitalRead(PIN_A1) == LOW ) { //Button is pressed?
+    if ( ledoff == 0 ) {
+    digitalWrite(LED_BUILTIN, LOW);  // LED off
+    Serial.println("LED Off!!");
+    escstatus = "off" ;
+    ledoff = 1 ; 
+    }
+  }
+}
 
 
 void testdrawstylesbase(void) {
   display.clearDisplay();
   display.setTextSize(1);             // Normal 1:1 pixel scale
   display.setTextColor(SSD1306_WHITE);        // Draw white text
-  display.setCursor(40,0);             
+  display.setCursor(0,1);             
+  display.println(F("ESC"));
+  display.setCursor(46,1);             
   display.println(F("Left"));
-  display.setCursor(90,0);            
+  display.setCursor(90,1);            
   display.println(F("Right"));
   display.setCursor(0,10);            
   display.println(F("Front"));
@@ -122,13 +147,20 @@ void testdrawstylesbase(void) {
   display.println(F("Rear"));
   testdrawstylesleft();    // Draw 'stylized' characters
   testdrawstylesright(); 
+  testdrawstylesesc();
   display.display();
 
 }
 
+void testdrawstylesesc(void) {
+  display.setCursor(20,1);     
+  display.println(escstatus);
+}
+
 void testdrawstylesleft(void) {
-  display.setCursor(40,10);
+  display.setCursor(45,10);
   display.println(lTemp);
+  //Serial1.println("hello");
 }
 
 void testdrawstylesright(void) {
