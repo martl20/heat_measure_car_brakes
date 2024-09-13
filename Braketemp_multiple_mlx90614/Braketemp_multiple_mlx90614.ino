@@ -12,7 +12,12 @@ float lTemp;
 float rTemp;
 int ledon = 0;
 int ledoff = 1;
+int goproon = 0;
+int goprooff = 1;
 String escstatus;
+String GoPROstatus;
+String buttonstatus;
+String buttonaction;
 Adafruit_MLX90614 mlx;
 
 float getLeftTemp(){
@@ -62,6 +67,7 @@ void setup() {
   Serial1.begin(9600);
   pinMode(LED_BUILTIN, OUTPUT);       // LED
   pinMode(PIN_A1, INPUT_PULLUP); // Pushbutton
+  pinMode(PIN_A0, INPUT_PULLUP); // Pushbutton
 // MLX90614 thermal heat sensor
   if (!Serial){
     Serial.println("Sparkfun MLX90614 test");
@@ -108,24 +114,54 @@ void loop() {
    serialprintlines();
    value = 0UL;
   }
+ // ESC (de)activate 
   if ( digitalRead(PIN_A1) == LOW ) { //Button is pressed?
     if ( ledon == 0 ) {
     digitalWrite(LED_BUILTIN, HIGH);   // LED on
     Serial.println("LED on!!");
     escstatus = "on"  ;
     ledon = 1 ; 
+    buttonaction = "ESC";
+    buttonstatus = "on";
     } 
   }
-if ( digitalRead(PIN_A1) == HIGH ) { //Button is depressed?
+  if ( digitalRead(PIN_A1) == HIGH ) { //Button is depressed?
      if ( ledon == 1 ) { ledoff = 0 ; ledon = 2;}
      if ( ledoff == 1 ) { ledon = 0 ;}
-}
+  }
   if ( digitalRead(PIN_A1) == LOW ) { //Button is pressed?
     if ( ledoff == 0 ) {
     digitalWrite(LED_BUILTIN, LOW);  // LED off
     Serial.println("LED Off!!");
     escstatus = "off" ;
     ledoff = 1 ; 
+    buttonaction = "ESC";
+    buttonstatus = "off";
+    }
+  }
+// GoPro (de)Activate
+  if ( digitalRead(PIN_A0) == LOW ) { //Button is pressed?
+    if ( goproon == 0 ) {
+    digitalWrite(LED_BUILTIN, HIGH);   // LED on
+    Serial.println("GoPro on!!");
+    GoPROstatus = "on"  ;
+    goproon = 1 ; 
+    buttonaction = "GoPro";
+    buttonstatus = "on";
+    } 
+  }
+  if ( digitalRead(PIN_A0) == HIGH ) { //Button is depressed?
+     if ( goproon == 1 ) { goprooff = 0 ; goproon = 2;}
+     if ( goprooff == 1 ) { goproon = 0 ;}
+  }
+  if ( digitalRead(PIN_A0) == LOW ) { //Button is pressed?
+    if ( goprooff == 0 ) {
+    digitalWrite(LED_BUILTIN, LOW);  // LED off
+    Serial.println("LED Off!!");
+    GoPROstatus = "off" ;
+    goprooff = 1 ;
+    buttonaction = "GoPro";
+    buttonstatus = "off"; 
     }
   }
 }
@@ -135,9 +171,7 @@ void testdrawstylesbase(void) {
   display.clearDisplay();
   display.setTextSize(1);             // Normal 1:1 pixel scale
   display.setTextColor(SSD1306_WHITE);        // Draw white text
-  display.setCursor(0,1);             
-  display.println(F("ESC"));
-  display.setCursor(46,1);             
+  display.setCursor(50,1);             
   display.println(F("Left"));
   display.setCursor(90,1);            
   display.println(F("Right"));
@@ -147,18 +181,20 @@ void testdrawstylesbase(void) {
   display.println(F("Rear"));
   testdrawstylesleft();    // Draw 'stylized' characters
   testdrawstylesright(); 
-  testdrawstylesesc();
+  testdrawstylesbutton();
   display.display();
 
 }
 
-void testdrawstylesesc(void) {
-  display.setCursor(20,1);     
-  display.println(escstatus);
+void testdrawstylesbutton(void) {
+  display.setCursor(0,1);             
+  display.println(buttonaction);
+  display.setCursor(25,1);     
+  display.println(buttonstatus);
 }
 
 void testdrawstylesleft(void) {
-  display.setCursor(45,10);
+  display.setCursor(48,10);
   display.println(lTemp);
   //Serial1.println("hello");
 }
